@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RiiwwxzCloudPay - Platform Resmi</title>
+    <style>
+        /* --- GLOBAL STYLES --- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #0f172a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary-blue: #3b82f6;
+            --primary-hover: #2563eb;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            --border-color: #334155;
+            --table-bg: #1e293b;
+            --table-header-bg: #fef3c7; 
+            --table-header-text: #000000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        button { cursor: pointer; border: none; outline: none; font-family: inherit; }
+
+        /* --- HEADER --- */
+        header {
+            background-color: #0b1120;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 20px;
+            color: white;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+        .logo-text h1 {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-text p {
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-badge {
+            background-color: #1e293b;
+            border: 1px solid var(--primary-blue);
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .user-badge .icon-f {
+            background-color: var(--primary-blue);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 10px;
+        }
+
+        .btn-login-header {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* --- NAVIGATION SUB-BAR --- */
+        .nav-subbar {
+            background-color: #000000;
+            padding: 10px 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* --- MAIN CONTAINER --- */
+        .container {
+            flex: 1;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* --- RADIO TABS SYSTEM (Untuk navigasi antar halaman) --- */
+        .tab-input { display: none; }
+        .tab-content { display: none; }
+
+        #tab-profile:checked ~ .content-wrapper #content-profile,
+        #tab-dashboard:checked ~ .content-wrapper #content-dashboard,
+        #tab-login:checked ~ .content-wrapper #content-login,
+        #tab-services:checked ~ .content-wrapper #content-services,
+        #tab-verify:checked ~ .content-wrapper #content-verify {
+            display: block;
+        }
+
+        /* --- TABS UI --- */
+        .tab-navigation {
+            display: flex;
+            background: var(--bg-card);
+            padding: 5px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            gap: 5px;
+        }
+
+        .tab-navigation label {
+            flex: 1;
+            text-align: center;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        #tab-profile:checked ~ .tab-navigation label[for="tab-profile"],
+        #tab-dashboard:checked ~ .tab-navigation label[for="tab-dashboard"],
+        #tab-login:checked ~ .tab-navigation label[for="tab-login"],
+        #tab-services:checked ~ .tab-navigation label[for="tab-services"],
+        #tab-verify:checked ~ .tab-navigation label[for="tab-verify"] {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        /* --- CARD STYLES --- */
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .section-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+
+        /* --- PROFILE PAGE SPECIFIC --- */
+        .profile-header {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .avatar-container {
+            width: 80px;
+            height: 80px;
+            background-color: #0f766e;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .avatar-container .icon-cam {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: #facc15;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            color: black;
+            border: 2px solid var(--bg-card);
+        }
+
+        .badge-verified {
+            background-color: var(--primary-blue);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .profile-email {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+            font-size: 13px;
+        }
+
+        .data-table tr {
+            border-bottom: 1px solid var(--border-color);
+        }
+        .data-table tr:last-child { border-bottom: none; }
+
+        .data-table td {
+            padding: 15px;
+            background-color: var(--bg-card);
+        }
+
+        .data-table td.label {
+            background-color: var(--table-header-bg);
+            color: var(--table-header-text);
+            font-weight: 600;
+            width: 40%;
+            border-right: 1px solid #cbd5e1;
+            text-transform: uppercase;
+        }
+
+        .data-table td.value {
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        /* --- DASHBOARD PAGE SPECIFIC --- */
+        .balance-card {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            border-radius: 16px;
+            padding: 25px 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balance-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .dot-green { width: 8px; height: 8px; background-color: #10b981; border-radius: 50%; }
+        .pill-name { background: rgba(0,0,0,0.3); padding: 3px 10px; border-radius: 10px; font-size: 10px; }
+
+        .balance-title { font-size: 11px; text-transform: uppercase; opacity: 0.8; margin-bottom: 5px; }
+        
+        .balance-amount {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 25px;
+        }
+        
+        .eye-icon { background: rgba(0,0,0,0.3); width: 30px; height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 12px 5px;
+            text-align: center;
+            font-size: 10px;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            transition: 0.2s;
+        }
+        .action-btn:hover { background: rgba(255, 255, 255, 0.2); }
+        .action-btn i { font-size: 18px; }
+        
+        .action-btn.orange { background: #f59e0b; color: #000; }
+        .action-btn.orange:hover { background: #d97706; }
+        .action-btn.blue { background: #60a5fa; color: #000; }
+
+        .withdraw-bar {
+            background-color: #0f172a;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vip-club {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .vip-icon {
+            background: #1e293b;
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            color: #60a5fa;
+        }
+        
+        .points-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .points-amount { font-size: 24px; font-weight: 800; color: #60a5fa; margin: 5px 0; }
+        .points-icon { font-size: 30px; }
+
+        /* --- LOGIN PAGE SPECIFIC --- */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 70vh;
+        }
+
+        .login-card {
+            background-color: var(--bg-card);
+            width: 100%;
+            max-width: 400px;
+            border-radius: 20px;
+            padding: 30px 25px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .login-logo {
+            width: 60px;
+            height: 60px;
+            background: #1e3a8a;
+            border-radius: 12px;
+            margin: 0 auto 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            border: 2px solid var(--primary-blue);
+        }
+
+        .login-title { font-size: 20px; font-weight: 800; margin-bottom: 5px; }
+        .login-subtitle { font-size: 11px; color: var(--text-muted); margin-bottom: 25px; }
+
+        .google-btn-box {
+            background-color: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .google-icon-bg { background: white; border-radius: 50%; width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; }
+        .google-text h4 { font-size: 14px; font-weight: 600; color: white; }
+        .google-text p { font-size: 10px; color: var(--text-muted); }
+
+        .form-group { text-align: left; margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 8px; color: #cbd5e1; }
+        
+        .input-wrapper {
+            position: relative;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+        }
+        .input-wrapper i { color: var(--text-muted); font-size: 14px; }
+        .input-wrapper input {
+            background: transparent;
+            border: none;
+            color: white;
+            width: 100%;
+            padding: 15px 10px;
+            font-size: 13px;
+            outline: none;
+        }
+        
+        .forgot-pass { text-align: right; font-size: 11px; color: var(--primary-blue); margin-bottom: 20px; display: block; font-weight: 600;}
+
+        .register-link { font-size: 12px; margin-top: 20px; color: var(--text-muted); }
+        .register-link a { color: var(--primary-blue); font-weight: 700; }
+
+        /* --- SERVICES PAGE SPECIFIC --- */
+        .services-header { text-align: center; padding: 20px 0 30px; }
+        .services-icon-top {
+            width: 60px; height: 60px; background: #1e293b; border-radius: 15px; margin: 0 auto 15px;
+            display: flex; justify-content: center; align-items: center; font-size: 24px; color: #60a5fa;
+        }
+        
+        .service-card {
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+        
+        .service-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-green);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .service-badge.api { background: rgba(59, 130, 246, 0.1); color: var(--primary-blue); border-color: rgba(59, 130, 246, 0.3); }
+
+        .service-icon {
+            width: 50px; height: 50px; background: #0f172a; border-radius: 12px;
+            display: flex; justify-content: center; align-items: center; font-size: 22px; color: #60a5fa;
+            margin-bottom: 20px;
+        }
+
+        .service-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+        .service-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 25px; }
+        
+        .service-divider { height: 1px; background-color: var(--border-color); margin-bottom: 15px; }
+        
+        .service-action {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 13px; font-weight: 700; color: #60a5fa; cursor: pointer;
+        }
+
+        .price-tag { font-size: 12px; font-weight: 600; color: #cbd5e1; background: #0f172a; padding: 5px 10px; border-radius: 6px; display: inline-block;}
+
+        /* --- VERIFY PAGE SPECIFIC --- */
+        .verify-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .verify-card {
+            background-color: var(--bg-card);
+            width: 100%;
+            max-width: 400px;
+            border-radius: 20px;
+            padding: 40px 25px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .verify-logo {
+            width: 70px; height: 70px; background: #0f172a; border-radius: 15px; margin: 0 auto 20px;
+            display: flex; justify-content: center; align-items: center; border: 2px solid white;
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+        .verify-title { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
+        .verify-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 25px; line-height: 1.5; }
+
+        .cloudflare-box {
+            background-color: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .cf-left { display: flex; align-items: center; gap: 10px; }
+        .cf-spinner {
+            width: 20px; height: 20px; border: 3px solid #334155; border-top: 3px solid var(--primary-blue);
+            border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .cf-text h4 { font-size: 12px; color: white; font-weight: 600; }
+        .cf-text p { font-size: 10px; color: var(--text-muted); }
+        .cf-text a { color: var(--text-muted); text-decoration: underline; }
+
+        .cf-logo { text-align: right; }
+        .cf-logo h5 { font-size: 12px; font-weight: 800; color: #f38020; letter-spacing: 1px;}
+        .cf-logo p { font-size: 8px; color: var(--text-muted); }
+
+        .btn-verify {
+            width: 100%; background-color: #1e3a8a; color: #93c5fd; padding: 15px;
+            border-radius: 8px; font-weight: 700; font-size: 14px; margin-bottom: 20px;
+            cursor: not-allowed;
+        }
+
+        .footer-text { font-size: 10px; color: var(--text-muted); }
+        .footer-text a { color: #93c5fd; text-decoration: underline; }
+
+    </style>
+    <!-- Import Icons (FontAwesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- INPUTS UNTUK RADIO TABS (Tersembunyi) -->
+    <input type="radio" name="app-tabs" id="tab-profile" class="tab-input" checked>
+    <input type="radio" name="app-tabs" id="tab-dashboard" class="tab-input">
+    <input type="radio" name="app-tabs" id="tab-login" class="tab-input">
+    <input type="radio" name="app-tabs" id="tab-services" class="tab-input">
+    <input type="radio" name="app-tabs" id="tab-verify" class="tab-input">
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo-container">
+            <div class="logo-icon">
+                <i class="fa-solid fa-cloud"></i>
+            </div>
+            <div class="logo-text">
+                <h1>RIIWWXZCLOUDPAY</h1>
+                <p>PLATFORM RESMI</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <!-- Tampil jika bukan di halaman login -->
+            <div class="user-badge" id="header-user">
+                <div class="icon-f">R</div>
+                RIIWWXZCLOUDPAY <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i>
+            </div>
+            <!-- Tampil jika di halaman login -->
+            <button class="btn-login-header" id="header-login-btn" style="display: none;">LOGIN <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+    </header>
+
+    <!-- NAVIGATION SUB-BAR (Hanya tampil di beberapa halaman) -->
+    <div class="nav-subbar" id="subbar">
+        <i class="fa-solid fa-chevron-right"></i> NAVIGATION MENU
+    </div>
+
+    <!-- TAB NAVIGATION UNTUK PREVIEW (Hanya untuk demo, silakan hapus jika sudah diimplementasikan di web asli) -->
+    <div class="container" style="padding-bottom: 0;">
+        <div class="tab-navigation">
+            <label for="tab-profile">Profile</label>
+            <label for="tab-dashboard">Dashboard</label>
+            <label for="tab-login">Login</label>
+            <label for="tab-services">Services</label>
+            <label for="tab-verify">Verify</label>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        
+        <!-- ========================================== -->
+        <!-- 1. PROFILE PAGE -->
+        <!-- ========================================== -->
+        <div id="content-profile" class="tab-content">
+            <div class="container">
+                
+                <div class="profile-header">
+                    <div class="avatar-container">
+                        <i class="fa-brands fa-facebook-f"></i>
+                        <div class="icon-cam"><i class="fa-solid fa-camera"></i></div>
+                    </div>
+                    <div class="badge-verified">
+                        <i class="fa-solid fa-circle-check"></i> PENGGUNA TERVERIFIKASI
+                    </div>
+                    <h2 class="profile-name">RIIWWXZCLOUDPAY</h2>
+                    <p class="profile-email">setiadikbarirdk798@gmail.com</p>
+                </div>
+
+                <div class="card">
+                    <h3 class="section-title">INFORMASI DATA AKUN</h3>
+                    <p class="section-subtitle">INFORMASI UTAMA AKUN & AKSES API INTEGRATION.</p>
+                    
+                    <button class="btn-primary"><i class="fa-solid fa-pen-to-square"></i> EDIT INFORMASI</button>
+                    
+                    <table class="data-table">
+                        <tr>
+                            <td class="label">USERNAME</td>
+                            <td class="value">riiwwxz</td>
+                        </tr>
+                        <tr>
+                            <td class="label">ALAMAT EMAIL</td>
+                            <td class="value">setiadikbarirdk798@gmail.com</td>
+                        </tr>
+                        <tr>
+                            <td class="label">API KEY MERCHANT</td>
+                            <td class="value">••••••••</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3 class="section-title">DATA PENCAIRAN DANA (E-WALLET / REKENING)</h3>
+                    <p class="section-subtitle">TUJUAN TRANSFER OTOMATIS SAAT PENGAJUAN PENARIKAN SALDO.</p>
+                    
+                    <button class="btn-primary"><i class="fa-solid fa-pen-to-square"></i> EDIT DATA E-WALLET</button>
+
+                    <table class="data-table">
+                        <tr>
+                            <td class="label">METODE PENCAIRAN</td>
+                            <td class="value">-</td>
+                        </tr>
+                        <tr>
+                            <td class="label">NOMOR REKENING / AKUN</td>
+                            <td class="value">-</td>
+                        </tr>
+                        <tr>
+                            <td class="label">ATAS NAMA PEMILIK</td>
+                            <td class="value">-</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 2. DASHBOARD PAGE -->
+        <!-- ========================================== -->
+        <div id="content-dashboard" class="tab-content">
+            <div class="container">
+                
+                <div class="balance-card">
+                    <div class="balance-status">
+                        <div class="dot-green"></div> AKUN AKTIF 
+                        <div class="pill-name">RIIWWXZCLOUDPAY</div>
+                    </div>
+                    
+                    <div class="balance-title">TOTAL SALDO AKTIF</div>
+                    <div class="balance-amount">
+                        0 <div class="eye-icon"><i class="fa-regular fa-eye-slash"></i></div>
+                    </div>
+
+                    <div class="action-grid">
+                        <div class="action-btn">
+                            <i class="fa-solid fa-file-invoice"></i>
+                            BUAT<br>INVOICE
+                        </div>
+                        <div class="action-btn">
+                            <i class="fa-solid fa-trophy"></i>
+                            TOP<br>DEPOSIT
+                        </div>
+                        <div class="action-btn blue">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            RIWAYAT
+                        </div>
+                        <div class="action-btn orange">
+                            <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                            TOP<br>WITHDRAW
+                        </div>
+                    </div>
+
+                    <div class="withdraw-bar">
+                        <i class="fa-solid fa-arrow-up-from-bracket"></i> TARIK SALDO
+                        <div style="margin-left: auto; background: rgba(255,255,255,0.1); width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
+                            <i class="fa-solid fa-comment-dots"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="vip-club">
+                        <div>
+                            <p style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 5px;">RIIWWXZCLOUDPAY VIP CLUB</p>
+                            <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 5px;">FREE MEMBER</h3>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">Upgrade untuk menikmati potongan biaya layanan.</p>
+                            <button style="background: #3b82f6; color: white; padding: 8px 15px; border-radius: 8px; font-weight: 600; font-size: 12px;">Lihat Membership <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                        <div class="vip-icon"><i class="fa-solid fa-crown"></i></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="points-card">
+                        <div>
+                            <p style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 5px;">RIIWWXZCLOUDPAY POINTS</p>
+                            <h3 class="points-amount">0 PTS</h3>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">Klaim poin harian dan kumpulkan reward dari deposit berhasil.</p>
+                            <a href="#" style="color: #60a5fa; font-size: 12px; font-weight: 700;">Buka Rewards <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                        <div class="points-icon"><i class="fa-solid fa-coins" style="color: #facc15;"></i></div>
+                    </div>
+                </div>
+
+                <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <p style="font-size: 11px; font-weight: 600; margin-bottom: 10px;">TOTAL PEMASUKAN</p>
+                        <h3 style="font-size: 24px; font-weight: 800;">Rp 0</h3>
+                        <p style="font-size: 10px; color: var(--text-muted); margin-top: 5px;">QRIS TERVERIFIKASI</p>
+                    </div>
+                    <div style="width: 40px; height: 40px; background: rgba(16, 185, 129, 0.2); border-radius: 50%; display: flex; justify-content: center; align-items: center;">
+                        <div style="width: 20px; height: 20px; background: #10b981; border-radius: 50%;"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 3. LOGIN PAGE -->
+        <!-- ========================================== -->
+        <div id="content-login" class="tab-content">
+            <div class="container login-container">
+                <div class="login-card">
+                    <div class="login-logo">
+                        <i class="fa-solid fa-cloud"></i>
+                    </div>
+                    <h2 class="login-title">MASUK KE ACCOUNT</h2>
+                    <p class="login-subtitle">SILAKAN MASUKKAN KREDENSIAL AKUN ANDA</p>
+
+                    <div class="google-btn-box">
+                        <div class="google-icon-bg">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" width="20">
+                        </div>
+                        <div class="google-text">
+                            <h4>Masuk dengan Google</h4>
+                            <p>Cepat, aman, dan tanpa perlu mengingat password baru</p>
+                        </div>
+                    </div>
+                    <!-- Tombol Google di dalam box untuk visual -->
+                    <button style="width: 100%; background: #4285f4; color: white; padding: 12px; border-radius: 8px; font-weight: 600; margin-bottom: 25px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+                        <i class="fa-brands fa-google"></i> Login dengan Google
+                    </button>
+
+                    <div class="form-group">
+                        <label>EMAIL ATAU USERNAME</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-user"></i>
+                            <input type="text" placeholder="username / email">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>PASSWORD</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" placeholder="••••••••">
+                            <i class="fa-regular fa-eye" style="cursor: pointer;"></i>
+                        </div>
+                    </div>
+
+                    <a href="#" class="forgot-pass">LUPA PASSWORD?</a>
+
+                    <button class="btn-primary" style="margin-bottom: 0;">MASUK AKUN <i class="fa-solid fa-arrow-right"></i></button>
+
+                    <div class="register-link">
+                        BELUM MEMILIKI AKUN? <a href="#">DAFTAR AKUN BARU</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 4. SERVICES PAGE -->
+        <!-- ========================================== -->
+        <div id="content-services" class="tab-content">
+            <div class="container">
+                
+                <div class="services-header">
+                    <div class="services-icon-top">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <p style="font-size: 11px; font-weight: 700; color: #60a5fa; letter-spacing: 1px; margin-bottom: 10px;">RIIWWXZCLOUDPAY WORKSPACE</p>
+                    <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 15px;">Pilih Layanan</h2>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">Pilih layanan yang ingin kamu gunakan. Satu akun RiiwwxzCloudPay dapat mengakses kedua layanan.</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-badge">LAYANAN TERSEDIA</div>
+                    <div class="service-icon"><i class="fa-solid fa-credit-card"></i></div>
+                    <h3 class="service-title">Payment Gateway</h3>
+                    <p class="service-desc">Kelola pembayaran, invoice, transaksi, saldo, dan fitur Payment Gateway RiiwwxzCloudPay yang sudah kamu gunakan.</p>
+                    <div class="service-divider"></div>
+                    <div class="service-action">
+                        Buka Payment Gateway <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-badge api">LAYANAN API</div>
+                    <div class="service-icon"><i class="fa-solid fa-code"></i></div>
+                    <h3 class="service-title">REST API GoPay</h3>
+                    <p class="service-desc">Kelola akses API GoPay, API Key, dokumentasi endpoint, dan langganan layanan dalam satu dashboard.</p>
+                    <div class="price-tag">Mulai Rp500 / hari</div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 5. VERIFY PAGE -->
+        <!-- ========================================== -->
+        <div id="content-verify" class="tab-content">
+            <div class="container verify-container">
+                <div class="verify-card">
+                    <div class="verify-logo">
+                        <i class="fa-solid fa-cloud" style="color: #60a5fa; font-size: 32px;"></i>
+                    </div>
+                    <h2 class="verify-title">Verifikasi Keamanan</h2>
+                    <p class="verify-desc">Selesaikan pemeriksaan keamanan Cloudflare untuk melanjutkan ke RiiwwxzCloudPay.</p>
+
+                    <div class="cloudflare-box">
+                        <div class="cf-left">
+                            <div class="cf-spinner"></div>
+                            <div class="cf-text">
+                                <h4>Melakukan verifikasi...</h4>
+                                <p>Tidak bisa melanjutkan? <a href="#">Pemecahan masalah</a></p>
+                            </div>
+                        </div>
+                        <div class="cf-logo">
+                            <h5>CLOUDFLARE</h5>
+                            <p>Privasi • Bantuan</p>
+                        </div>
+                    </div>
+
+                    <button class="btn-verify">Verifikasi & Lanjutkan</button>
+
+                    <p class="footer-text">Dilindungi oleh Cloudflare Turnstile • RiiwwxzCloudPay</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SCRIPT KECIL UNTUK MENYEMBUNYIKAN HEADER DI HALAMAN LOGIN -->
+    <script>
+        const tabLogin = document.getElementById('tab-login');
+        const headerUser = document.getElementById('header-user');
+        const headerLoginBtn = document.getElementById('header-login-btn');
+        const subbar = document.getElementById('subbar');
+
+        // Fungsi untuk mengecek tab mana yang aktif
+        function checkActiveTab() {
+            if (tabLogin.checked) {
+                headerUser.style.display = 'none';
+                headerLoginBtn.style.display = 'block';
+                subbar.style.display = 'none'; // Sembunyikan subbar di halaman login
+            } else {
+                headerUser.style.display = 'flex';
+                headerLoginBtn.style.display = 'none';
+                subbar.style.display = 'flex';
+                
+                // Sembunyikan subbar di halaman verify jika diinginkan
+                if(document.getElementById('tab-verify').checked) {
+                    subbar.style.display = 'none';
+                }
+            }
+        }
+
+        // Tambahkan event listener ke semua radio button
+        document.querySelectorAll('input[name="app-tabs"]').forEach(radio => {
+            radio.addEventListener('change', checkActiveTab);
+        });
+
+        // Jalankan saat pertama kali load
+        checkActiveTab();
+    </script>
+</body>
+</html>
