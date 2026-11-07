@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RiiwwxzCloudPay - Platform Resmi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #0f172a; --bg-card: #1e293b; --bg-input: #0f172a;
+            --text-main: #f8fafc; --text-muted: #94a3b8;
+            --primary-blue: #3b82f6; --primary-hover: #2563eb;
+            --accent-green: #10b981; --accent-orange: #f59e0b;
+            --border-color: #334155; --table-header-bg: #fef3c7; --table-header-text: #000000;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+        a { text-decoration: none; color: inherit; }
+        
+        button, .action-btn, .user-badge, .service-action, .withdraw-bar, .label, .clickable { transition: transform 0.1s, filter 0.2s; cursor: pointer; }
+        button:active, .action-btn:active, .clickable:active { transform: scale(0.95); filter: brightness(0.8); }
+
+        /* HEADER */
+        header { background-color: #0b1120; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
+        .logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #1e3a8a, #3b82f6); border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 20px; color: white; }
+        .logo-text h1 { font-size: 16px; font-weight: 800; }
+        .logo-text p { font-size: 10px; color: var(--text-muted); }
+        .header-right { display: flex; align-items: center; gap: 10px;}
+        .user-badge { background-color: #1e293b; border: 1px solid var(--primary-blue); padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; }
+        .user-badge .icon-f { background-color: var(--primary-blue); width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 10px; }
+        .btn-login-header, .btn-logout { background-color: var(--primary-blue); color: white; padding: 8px 15px; border-radius: 8px; font-weight: 600; font-size: 13px; }
+        .btn-logout { background-color: #ef4444; }
+
+        /* NAV SUBBAR */
+        .nav-subbar { background-color: #000000; padding: 10px 20px; font-size: 11px; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+
+        /* CONTAINER */
+        .container { flex: 1; padding: 20px; max-width: 600px; margin: 0 auto; width: 100%; }
+
+        /* TABS SYSTEM */
+        .tab-input { display: none; }
+        .tab-content { display: none; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        #tab-profile:checked ~ .content-wrapper #content-profile,
+        #tab-dashboard:checked ~ .content-wrapper #content-dashboard,
+        #tab-login:checked ~ .content-wrapper #content-login,
+        #tab-register:checked ~ .content-wrapper #content-register,
+        #tab-services:checked ~ .content-wrapper #content-services,
+        #tab-restapi:checked ~ .content-wrapper #content-restapi,
+        #tab-docs:checked ~ .content-wrapper #content-docs { display: block; }
+
+        /* CARDS & BUTTONS */
+        .card { background-color: var(--bg-card); border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border-color); }
+        .btn-primary { background-color: var(--primary-blue); color: white; width: 100%; padding: 14px; border-radius: 8px; font-weight: 700; font-size: 14px; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        
+        /* PROFILE */
+        .profile-header { text-align: center; padding: 20px 0; }
+        .avatar-container { width: 80px; height: 80px; background-color: #0f766e; border-radius: 50%; margin: 0 auto 15px; display: flex; justify-content: center; align-items: center; font-size: 40px; font-weight: bold; position: relative; }
+        .avatar-container .icon-cam { position: absolute; bottom: 0; right: 0; background-color: #facc15; width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 12px; color: black; border: 2px solid var(--bg-card); }
+        .badge-verified { background-color: var(--primary-blue); display: inline-flex; align-items: center; gap: 5px; padding: 5px 15px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-bottom: 10px; }
+        .profile-name { font-size: 22px; font-weight: 800; margin-bottom: 5px; }
+        .profile-email { font-size: 12px; color: var(--text-muted); }
+
+        /* TABLE */
+        .data-table { width: 100%; border-collapse: collapse; border-radius: 10px; overflow: hidden; font-size: 13px; }
+        .data-table td { padding: 15px; background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); }
+        .data-table td.label { background-color: var(--table-header-bg); color: var(--table-header-text); font-weight: 600; width: 40%; }
+
+        /* DASHBOARD */
+        .balance-card { background: linear-gradient(135deg, #1e3a8a, #3b82f6); border-radius: 16px; padding: 25px 20px; margin-bottom: 20px; }
+        .balance-amount { display: flex; align-items: center; gap: 15px; font-size: 36px; font-weight: 800; margin: 15px 0 25px; }
+        .eye-icon { background: rgba(0,0,0,0.3); width: 30px; height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+        .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .action-btn { background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 12px 5px; text-align: center; font-size: 10px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 8px; color: white; }
+        .action-btn.orange { background: #f59e0b; color: #000; }
+        .action-btn.blue { background: #60a5fa; color: #000; }
+        .withdraw-bar { background-color: #0f172a; border-radius: 10px; padding: 15px; text-align: center; font-weight: 700; font-size: 14px; margin-top: 15px; }
+
+        /* AUTH FORMS */
+        .auth-card { background-color: var(--bg-card); width: 100%; max-width: 400px; border-radius: 20px; padding: 30px 25px; margin: 0 auto; border: 1px solid var(--border-color); text-align: center; }
+        .auth-logo { width: 60px; height: 60px; background: #1e3a8a; border-radius: 12px; margin: 0 auto 15px; display: flex; justify-content: center; align-items: center; font-size: 30px; border: 2px solid var(--primary-blue); }
+        .auth-title { font-size: 20px; font-weight: 800; margin-bottom: 5px; }
+        .auth-subtitle { font-size: 11px; color: var(--text-muted); margin-bottom: 25px; }
+        .btn-google { width: 100%; background: #4285f4; color: white; padding: 12px; border-radius: 8px; font-weight: 600; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .form-group { text-align: left; margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 8px; color: #cbd5e1; }
+        .input-wrapper { background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; display: flex; align-items: center; padding: 0 15px; }
+        .input-wrapper i { color: var(--text-muted); }
+        .input-wrapper input { background: transparent; border: none; color: white; width: 100%; padding: 15px 10px; font-size: 13px; outline: none; }
+        .auth-switch { font-size: 12px; margin-top: 20px; color: var(--text-muted); }
+        .auth-switch a { color: var(--primary-blue); font-weight: 700; cursor: pointer; }
+
+        /* REST API PAGE */
+        .api-hero { background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 16px; padding: 25px 20px; margin-bottom: 20px; }
+        .api-hero h2 { font-size: 28px; font-weight: 800; margin: 10px 0; }
+        .price-box { background: rgba(0,0,0,0.4); border-radius: 12px; padding: 15px; margin-top: 15px; }
+        .price-box h3 { font-size: 28px; font-weight: 800; }
+        .status-card { display: flex; justify-content: space-between; align-items: center; }
+        .status-badge { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); padding: 5px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; border: 1px solid var(--accent-green); }
+        .status-badge.inactive { background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: #ef4444; }
+        .api-key-box { background: #0f172a; border: 1px dashed var(--border-color); border-radius: 12px; padding: 30px; text-align: center; margin: 15px 0; }
+        .api-key-box i { font-size: 30px; color: var(--text-muted); margin-bottom: 10px; }
+        
+        /* INVOICE BOX */
+        .invoice-box { background: #0f172a; border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; text-align: center; margin-top: 15px; }
+        .invoice-box img { width: 200px; height: 200px; background: white; border-radius: 10px; padding: 10px; margin: 15px 0; }
+
+        /* DOCS PAGE */
+        .docs-box { background: #0f172a; border: 1px solid var(--border-color); border-radius: 10px; padding: 15px; font-family: monospace; font-size: 12px; color: #60a5fa; overflow-x: auto; margin-bottom: 15px; white-space: pre; }
+        .endpoint-item { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 15px; overflow: hidden; }
+        .endpoint-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--border-color); }
+        .endpoint-header h4 { font-size: 14px; display: flex; align-items: center; gap: 10px; }
+        .badge-get { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); padding: 4px 8px; border-radius: 5px; font-size: 10px; font-weight: 800; }
+        .endpoint-body { padding: 15px; font-size: 12px; color: var(--text-muted); }
+        .endpoint-body strong { color: var(--text-main); display: block; margin-top: 10px; margin-bottom: 5px;}
+
+        /* MODALS */
+        .custom-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(3px); }
+        .custom-modal.active { display: flex; animation: fadeIn 0.2s; }
+        .modal-content { background: var(--bg-card); border-radius: 16px; width: 100%; max-width: 400px; padding: 20px; border: 1px solid var(--border-color); text-align: left; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 15px; }
+        .modal-header h3 { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .modal-close { background: none; color: var(--text-muted); font-size: 18px; }
+        
+        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); z-index: 9999; display: none; justify-content: center; align-items: center; flex-direction: column; gap: 15px; }
+        .spinner { width: 40px; height: 40px; border: 4px solid var(--border-color); border-top: 4px solid var(--primary-blue); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    </style>
+</head>
+<body>
+
+    <!-- LOADING -->
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <p style="font-weight: 600; font-size: 14px;">Memproses...</p>
+    </div>
+
+    <!-- RADIO TABS -->
+    <input type="radio" name="app-tabs" id="tab-profile" class="tab-input" checked>
+    <input type="radio" name="app-tabs" id="tab-dashboard" class="tab-input">
+    <input type="radio" name="app-tabs" id="tab-login" class="tab-input">
+    <input type="radio" name="app-tabs" id="tab-register" class="tab-input">
+    <input type="radio" name="app-tabs" id="tab-services" class="tab-input">
+    <input type="radio" name="app-tabs" id="tab-restapi" class="tab-input">
+    <input type="radio" name="app-tabs" id="tab-docs" class="tab-input">
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo-container" onclick="switchTab('tab-dashboard')">
+            <div class="logo-icon"><i class="fa-solid fa-cloud"></i></div>
+            <div class="logo-text">
+                <h1>RIIWWXZCLOUDPAY</h1>
+                <p>PLATFORM RESMI</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="user-badge" id="header-user" style="display: none;" onclick="switchTab('tab-profile')">
+                <div class="icon-f" id="header-initial">R</div> <span id="header-username">USER</span>
+            </div>
+            <button class="btn-logout" id="header-logout-btn" style="display: none;" onclick="logoutUser()">Keluar</button>
+            <button class="btn-login-header" id="header-login-btn" onclick="switchTab('tab-login')">LOGIN <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+    </header>
+
+    <div class="nav-subbar" id="subbar"><i class="fa-solid fa-chevron-right"></i> NAVIGATION MENU</div>
+
+    <!-- NAV MENU DEMO (Bisa dihapus nanti) -->
+    <div class="container" style="padding-bottom: 0; overflow-x: auto; white-space: nowrap;">
+        <div style="display: flex; gap: 5px; background: var(--bg-card); padding: 5px; border-radius: 10px; margin-bottom: 20px;">
+            <label for="tab-dashboard" style="padding: 8px 12px; font-size: 12px; cursor: pointer; color: var(--text-muted);">Dashboard</label>
+            <label for="tab-profile" style="padding: 8px 12px; font-size: 12px; cursor: pointer; color: var(--text-muted);">Profil</label>
+            <label for="tab-login" style="padding: 8px 12px; font-size: 12px; cursor: pointer; color: var(--text-muted);">Login</label>
+            <label for="tab-register" style="padding: 8px 12px; font-size: 12px; cursor: pointer; color: var(--text-muted);">Register</label>
+            <label for="tab-services" style="padding: 8px 12px; font-size: 12px; cursor: pointer; color: var(--text-muted);">Services</label>
+            <label for="tab-restapi" style="padding: 8px 12px; font-size: 12px; cursor: pointer; color: var(--text-muted);">REST API</label>
+            <label for="tab-docs" style="padding: 8px 12px; font-size: 12px; cursor: pointer; color: var(--text-muted);">Docs API</label>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        
+        <!-- 1. PROFILE -->
+        <div id="content-profile" class="tab-content">
+            <div class="container">
+                <div class="profile-header">
+                    <div class="avatar-container" id="profile-initial" onclick="openModal('editProfileModal')">
+                        R <div class="icon-cam"><i class="fa-solid fa-camera"></i></div>
+                    </div>
+                    <div class="badge-verified"><i class="fa-solid fa-circle-check"></i> PENGGUNA TERVERIFIKASI</div>
+                    <h2 class="profile-name" id="profile-name-display">Memuat...</h2>
+                    <p class="profile-email" id="profile-email-display">Memuat...</p>
+                </div>
+                <div class="card">
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 5px;">INFORMASI DATA AKUN</h3>
+                    <button class="btn-primary" style="margin-bottom: 15px;" onclick="openModal('editProfileModal')"><i class="fa-solid fa-pen-to-square"></i> EDIT INFORMASI</button>
+                    <table class="data-table">
+                        <tr><td class="label">USERNAME</td><td class="value" id="profile-username">-</td></tr>
+                        <tr><td class="label">ALAMAT EMAIL</td><td class="value" id="profile-email">-</td></tr>
+                        <tr><td class="label">API KEY</td><td class="value">••••••••</td></tr>
+                    </table>
+                </div>
+                <div class="card">
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 5px;">DATA PENCAIRAN DANA</h3>
+                    <button class="btn-primary" style="margin-bottom: 15px;" onclick="openModal('editRekeningModal')"><i class="fa-solid fa-pen-to-square"></i> EDIT DATA E-WALLET</button>
+                    <table class="data-table">
+                        <tr><td class="label">METODE</td><td class="value" id="profile-metode">-</td></tr>
+                        <tr><td class="label">NOMOR REKENING</td><td class="value" id="profile-rekening">-</td></tr>
+                        <tr><td class="label">ATAS NAMA</td><td class="value" id="profile-nama">-</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. DASHBOARD -->
+        <div id="content-dashboard" class="tab-content">
+            <div class="container">
+                <div class="balance-card">
+                    <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; margin-bottom: 15px;">
+                        <div style="width: 8px; height: 8px; background: #10b981; border-radius: 50%;"></div> AKUN AKTIF 
+                        <div style="background: rgba(0,0,0,0.3); padding: 3px 10px; border-radius: 10px; font-size: 10px;" id="dash-username">USER</div>
+                    </div>
+                    <div style="font-size: 11px; text-transform: uppercase; opacity: 0.8;">TOTAL SALDO AKTIF</div>
+                    <div class="balance-amount">Rp <span id="dash-saldo">0</span> <div class="eye-icon" onclick="openModal('infoSaldoModal')"><i class="fa-regular fa-eye-slash"></i></div></div>
+                    <div class="action-grid">
+                        <div class="action-btn" onclick="openModal('fiturModal', 'Buat Invoice')"><i class="fa-solid fa-file-invoice"></i> BUAT<br>INVOICE</div>
+                        <div class="action-btn" onclick="openModal('fiturModal', 'Top Deposit')"><i class="fa-solid fa-trophy"></i> TOP<br>DEPOSIT</div>
+                        <div class="action-btn blue" onclick="openModal('fiturModal', 'Riwayat')"><i class="fa-solid fa-clock-rotate-left"></i> RIWAYAT</div>
+                        <div class="action-btn orange" onclick="openModal('fiturModal', 'Withdraw')"><i class="fa-solid fa-arrow-up-from-bracket"></i> TOP<br>WITHDRAW</div>
+                    </div>
+                    <div class="withdraw-bar" onclick="openModal('fiturModal', 'Tarik Saldo')"><i class="fa-solid fa-arrow-up-from-bracket"></i> TARIK SALDO</div>
+                </div>
+                <div class="card">
+                    <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 5px;">FREE MEMBER</h3>
+                    <button style="background: #3b82f6; color: white; padding: 8px 15px; border-radius: 8px; font-size: 12px; margin-top:10px;" onclick="openModal('fiturModal', 'VIP Membership')">Lihat Membership <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. LOGIN -->
+        <div id="content-login" class="tab-content">
+            <div class="container">
+                <div class="auth-card">
+                    <div class="auth-logo"><i class="fa-solid fa-cloud"></i></div>
+                    <h2 class="auth-title">MASUK KE ACCOUNT</h2>
+                    <p class="auth-subtitle">SILAKAN MASUKKAN KREDENSIAL AKUN ANDA</p>
+                    <button class="btn-google" onclick="loginWithGoogle()"><i class="fa-brands fa-google"></i> Login dengan Google</button>
+                    <div class="form-group">
+                        <label>EMAIL</label>
+                        <div class="input-wrapper"><i class="fa-regular fa-envelope"></i><input type="email" id="login-email" placeholder="nama@email.com"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>PASSWORD</label>
+                        <div class="input-wrapper"><i class="fa-solid fa-lock"></i><input type="password" id="login-password" placeholder="••••••••"></div>
+                    </div>
+                    <button class="btn-primary" onclick="loginWithEmail()">MASUK AKUN <i class="fa-solid fa-arrow-right"></i></button>
+                    <div class="auth-switch">BELUM PUNYA AKUN? <a onclick="switchTab('tab-register')">DAFTAR SEKARANG</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. REGISTER -->
+        <div id="content-register" class="tab-content">
+            <div class="container">
+                <div class="auth-card">
+                    <div class="auth-logo"><i class="fa-solid fa-cloud"></i></div>
+                    <h2 class="auth-title">BUAT AKUN BARU</h2>
+                    <p class="auth-subtitle">LENGKAPI DATA DI BAWAH INI</p>
+                    <button class="btn-google" onclick="loginWithGoogle()"><i class="fa-brands fa-google"></i> Daftar dengan Google</button>
+                    <div class="form-group">
+                        <label>USERNAME</label>
+                        <div class="input-wrapper"><i class="fa-solid fa-at"></i><input type="text" id="reg-username" placeholder="username"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>ALAMAT EMAIL</label>
+                        <div class="input-wrapper"><i class="fa-regular fa-envelope"></i><input type="email" id="reg-email" placeholder="nama@email.com"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>PASSWORD</label>
+                        <div class="input-wrapper"><i class="fa-solid fa-lock"></i><input type="password" id="reg-password" placeholder="••••••••"></div>
+                    </div>
+                    <button class="btn-primary" onclick="registerNewAccount()">DAFTAR AKUN SEKARANG <i class="fa-solid fa-arrow-right"></i></button>
+                    <div class="auth-switch">SUDAH PUNYA AKUN? <a onclick="switchTab('tab-login')">MASUK SEKARANG</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. SERVICES -->
+        <div id="content-services" class="tab-content">
+            <div class="container">
+                <div style="text-align: center; padding: 20px 0;">
+                    <div style="width: 60px; height: 60px; background: #1e293b; border-radius: 15px; margin: 0 auto 15px; display: flex; justify-content: center; align-items: center; font-size: 24px; color: #60a5fa;"><i class="fa-solid fa-layer-group"></i></div>
+                    <h2 style="font-size: 24px; font-weight: 800;">Pilih Layanan</h2>
+                </div>
+                <div class="card" style="position: relative;">
+                    <div style="position: absolute; top: 20px; right: 20px; background: rgba(16, 185, 129, 0.1); color: var(--accent-green); font-size: 10px; font-weight: 700; padding: 5px 10px; border-radius: 20px;">TERSEDIA</div>
+                    <div style="width: 50px; height: 50px; background: #0f172a; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 22px; color: #60a5fa; margin-bottom: 20px;"><i class="fa-solid fa-credit-card"></i></div>
+                    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 10px;">Payment Gateway</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 25px;">Kelola pembayaran, invoice, transaksi, saldo, dan fitur Payment Gateway.</p>
+                    <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: #60a5fa; cursor: pointer;" onclick="openModal('fiturModal', 'Buka Payment Gateway')">Buka Payment Gateway <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+                <div class="card" style="position: relative;">
+                    <div style="position: absolute; top: 20px; right: 20px; background: rgba(59, 130, 246, 0.1); color: var(--primary-blue); font-size: 10px; font-weight: 700; padding: 5px 10px; border-radius: 20px;">LAYANAN API</div>
+                    <div style="width: 50px; height: 50px; background: #0f172a; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 22px; color: #60a5fa; margin-bottom: 20px;"><i class="fa-solid fa-code"></i></div>
+                    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 10px;">REST API GoPay</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 25px;">Kelola akses API GoPay, API Key, dokumentasi endpoint.</p>
+                    <button style="background: #3b82f6; color: white; padding: 8px 15px; border-radius: 8px; font-size: 12px;" onclick="switchTab('tab-restapi')">Lihat Detail</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. REST API GOPAY -->
+        <div id="content-restapi" class="tab-content">
+            <div class="container">
+                <button style="background: #1e293b; color: white; padding: 8px 15px; border-radius: 8px; font-size: 12px; margin-bottom: 15px;" onclick="switchTab('tab-services')"><i class="fa-solid fa-arrow-left"></i> SEMUA LAYANAN</button>
+                <div class="api-hero">
+                    <div style="display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px; font-size: 10px; margin-bottom: 10px;"><i class="fa-solid fa-code"></i> API SERVICES</div>
+                    <h2>REST API GOPAY</h2>
+                    <p style="font-size: 13px; opacity: 0.9;">Kelola API Key, langganan, pembayaran, dan koneksi GoPay Merchant dari satu tempat.</p>
+                    <div class="price-box">
+                        <div style="font-size: 11px; opacity: 0.8; margin-bottom: 5px;">HARGA LAYANAN</div>
+                        <h3>Rp 500 <span style="font-size: 14px; font-weight: normal; opacity: 0.8;">/ hari / API Key</span></h3>
+                    </div>
+                </div>
+
+                <div class="card status-card">
+                    <div>
+                        <div style="font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 5px;">STATUS LANGGANAN</div>
+                        <h3 style="font-size: 20px; font-weight: 800; color: #ef4444;">Nonaktif</h3>
+                        <p style="font-size: 12px; color: var(--text-muted);">0 hari tersisa</p>
+                    </div>
+                    <div style="background: var(--primary-blue); width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><i class="fa-solid fa-key"></i></div>
+                </div>
+
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="font-size: 16px; font-weight: 700;">API KEY KAMU</h3>
+                        <span class="status-badge inactive">NONAKTIF</span>
+                    </div>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Gunakan key ini untuk autentikasi request API.</p>
+                    
+                    <div class="api-key-box">
+                        <i class="fa-solid fa-lock"></i>
+                        <h4 style="font-size: 14px; font-weight: 600; color: var(--text-muted);">API Key belum tersedia</h4>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">Aktifkan langganan untuk mendapatkan API Key.</p>
+                    </div>
+
+                    <div style="background: #fef3c7; border-radius: 12px; padding: 15px; color: #000;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <h4 style="font-size: 14px; font-weight: 700;">Beli API Key sekarang</h4>
+                            <span style="background: var(--primary-blue); color: white; padding: 3px 8px; border-radius: 10px; font-size: 10px;">Rp 500 / hari</span>
+                        </div>
+                        <p style="font-size: 11px; color: #475569; margin-bottom: 15px;">Pilih durasi, bayar QRIS, lalu layanan aktif otomatis.</p>
+                        
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                            <select id="durasi-langganan" style="flex: 1; padding: 10px; border-radius: 8px; background: #0f172a; color: white; border: none; outline: none;">
+                                <option value="500">30 hari</option>
+                                <option value="1000">60 hari</option>
+                            </select>
+                        </div>
+
+                        <button class="btn-primary" style="margin-bottom: 0;" onclick="buatInvoice()"><i class="fa-solid fa-lock"></i> BELI API KEY</button>
+                    </div>
+
+                    <!-- Tampilan Invoice (Disembunyikan awalnya) -->
+                    <div id="invoice-section" style="display: none; margin-top: 15px;">
+                        <div class="invoice-box">
+                            <h4 style="font-size: 14px; font-weight: 700;">INVOICE PEMBAYARAN</h4>
+                            <p style="font-size: 11px; color: var(--text-muted); margin-top: 5px;" id="invoice-text">Invoice: #GO-XXX • 30 hari • Rp 15.000</p>
+                            <!-- Gambar QRIS Dummy -->
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=SimulasiPembayaranRiiwwxz" alt="QRIS">
+                            <button class="btn-primary" style="margin-bottom: 10px; background: #3b82f6;">BUKA HALAMAN PEMBAYARAN</button>
+                            <p style="font-size: 12px; color: var(--accent-orange); margin-bottom: 10px;">Menunggu pembayaran...</p>
+                            <button style="background: #0f172a; color: white; border: 1px solid var(--border-color); padding: 10px 20px; border-radius: 8px; font-weight: 600;" onclick="alert('Simulasi: Pembayaran belum diterima.')">CEK PEMBAYARAN</button>
+                        </div>
+                    </div>
+
+                    <button style="background: var(--primary-blue); color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; margin-top: 15px; display: flex; align-items: center; gap: 8px;" onclick="switchTab('tab-docs')"><i class="fa-solid fa-book"></i> DOKUMENTASI API</button>
+                </div>
+
+                <div class="card">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                        <div style="background: #1e3a8a; width: 40px; height: 40px; border-radius: 10px; display: flex; justify-content: center; align-items: center;"><i class="fa-brands fa-whatsapp" style="color: #60a5fa; font-size: 20px;"></i></div>
+                        <div>
+                            <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">MERCHANT ACCOUNT</div>
+                            <h3 style="font-size: 16px; font-weight: 700;">Sambungkan GoPay</h3>
+                        </div>
+                    </div>
+                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 15px; margin-bottom: 15px;">
+                        <h4 style="font-size: 13px; color: var(--accent-green); font-weight: 700; display: flex; align-items: center; gap: 5px;"><i class="fa-solid fa-shield-halved"></i> Verifikasi API Key wajib</h4>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">Dashboard tetap bisa dibuka. API Key diminta hanya untuk membuka atau mengganti nomor GoPay Merchant.</p>
+                    </div>
+                    <div class="form-group">
+                        <label>API KEY RIIWWXZCLOUDPAY</label>
+                        <div style="display: flex; gap: 10px;">
+                            <div class="input-wrapper" style="flex: 1;"><input type="text" placeholder="Masukkan API Key kamu"></div>
+                            <button style="background: var(--primary-blue); color: white; padding: 0 20px; border-radius: 8px; font-weight: 600;" onclick="openModal('fiturModal', 'Verifikasi API Key')">VERIFIKASI</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. DOKUMENTASI API -->
+        <div id="content-docs" class="tab-content">
+            <div class="container">
+                <div class="api-hero" style="background: linear-gradient(135deg, #1e3a8a, #3b82f6);">
+                    <div style="display: inline-block; background: #000; color: #60a5fa; padding: 5px 10px; border-radius: 20px; font-size: 10px; margin-bottom: 10px; font-weight: 700;"><i class="fa-solid fa-code"></i> REST API V1.0</div>
+                    <h2>RIIWWXZCLOUDPAY API</h2>
+                    <p style="font-size: 13px; opacity: 0.9; margin-bottom: 15px;">Payment API untuk website, bot Telegram, Discord bot, panel, toko online, dan aplikasi lainnya.</p>
+                    <div style="background: rgba(0,0,0,0.4); padding: 15px; border-radius: 10px;">
+                        <div style="font-size: 10px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px;">APIKEY ANDA:</div>
+                        <div style="display: flex; gap: 10px;">
+                            <div style="background: #93c5fd; color: #000; padding: 8px 15px; border-radius: 5px; font-family: monospace; font-size: 12px; flex: 1; overflow: hidden; text-overflow: ellipsis;">riiwwxz_d2f191b434d4eee</div>
+                            <button style="background: var(--primary-blue); color: white; padding: 0 15px; border-radius: 5px;" onclick="copyToClipboard('riiwwxz_d2f191b434d4eee')"><i class="fa-regular fa-copy"></i> Salin</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;"><span style="background: var(--primary-blue); width: 25px; height: 25px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 12px;">A</span> AUTENTIKASI & FORMAT PARAMETER</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Semua endpoint memerlukan API Key. Untuk integrasi baru, gunakan header Authorization: Bearer YOUR_API_KEY.</p>
+                    <div class="docs-box" style="background: #fef3c7; color: #000; border: none;">
+                        1. RECOMMENDED — BEARER:
+Authorization: Bearer YOUR_API_KEY
+
+2. HTTP HEADER:
+x-api-key: YOUR_API_KEY
+
+3. QUERY PARAMETER (LEGACY):
+?apikey=YOUR_API_KEY
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;"><span style="background: var(--accent-green); width: 25px; height: 25px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 12px;">B</span> QRIS API — RIIWWXZCLOUDPAY</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Endpoint kompatibel untuk integrasi aplikasi, bot, panel, dan toko.</p>
+                    <div class="docs-box" style="background: #e0f2fe; color: #000; border: none; margin-bottom: 15px;">
+                        Gunakan Base URL RiiwwxzCloudPay dan API Key milik akunmu. Semua invoice yang dibuat melalui API otomatis terkait ke akun pemilik API Key.
+                        
+BASE_URL: https://adriancloud.web.id
+                    </div>
+
+                    <!-- Endpoint 1 -->
+                    <div class="endpoint-item">
+                        <div class="endpoint-header">
+                            <h4><span class="badge-get">POST</span> /qris/generate</h4>
+                        </div>
+                        <div class="endpoint-body">
+                            <p>Buat QRIS dinamis. Body JSON:</p>
+                            <div class="docs-box">{"amount":10000}</div>
+                            <strong>Contoh Response:</strong>
+                            <div class="docs-box" style="color: #10b981;">{
+  "success": true,
+  "message": "QRIS created successfully",
+  "data": {
+    "transaction_id": "INV123",
+    "amount": 10000,
+    "status": "pending",
+    "qr_url": "https://..."
+  }
+}</div>
+                        </div>
+                    </div>
+
+                    <!-- Endpoint 2 -->
+                    <div class="endpoint-item">
+                        <div class="endpoint-header">
+                            <h4><span class="badge-get">GET</span> /api/balance</h4>
+                            <button style="background: var(--primary-blue); color: white; padding: 5px 10px; border-radius: 5px; font-size: 10px;" onclick="copyToClipboard('https://adriancloud.web.id/api/balance')"><i class="fa-regular fa-copy"></i> Salin</button>
+                        </div>
+                        <div class="endpoint-body">
+                            <p>Mendapatkan saldo akun pengguna terbaru secara real-time.</p>
+                            <strong>Endpoint URL:</strong>
+                            <div class="docs-box" style="color: #facc15;">GET /api/balance</div>
+                            <strong>Contoh Response (200 OK):</strong>
+                            <div class="docs-box" style="color: #10b981;">{
+  "balance": 150000
+}</div>
+                        </div>
+                    </div>
+
+                    <!-- Endpoint 3 -->
+                    <div class="endpoint-item">
+                        <div class="endpoint-header">
+                            <h4><span class="badge-get">GET</span> /api/create/qris</h4>
+                        </div>
+                        <div class="endpoint-body">
+                            <p>Membuat invoice baru beserta QRIS dinamis otomatis.</p>
+                            <strong>Query Parameters:</strong>
+                            <table style="width: 100%; font-size: 11px; text-align: left; margin-top: 5px; background: #0f172a; border-radius: 5px;">
+                                <tr style="border-bottom: 1px solid #334155;"><th style="padding: 5px;">PARAMETER</th><th>TIPE</th><th>WAJIB</th></tr>
+                                <tr style="border-bottom: 1px solid #334155;"><td style="padding: 5px;">apikey</td><td>string</td><td><span style="background: #ef4444; color: white; padding: 2px 5px; border-radius: 3px;">YA</span></td></tr>
+                                <tr><td style="padding: 5px;">amount</td><td>number</td><td><span style="background: #ef4444; color: white; padding: 2px 5px; border-radius: 3px;">YA</span></td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 12px;">
+                    &copy; 2026 RiiwwxzCloudPay. All Rights Reserved.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODALS (POP UPS) -->
+    
+    <!-- Modal Edit Profil -->
+    <div class="custom-modal" id="editProfileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-pen"></i> EDIT INFORMASI AKUN</h3>
+                <button class="modal-close" onclick="closeModal('editProfileModal')"><i class="fa-solid fa-circle-xmark"></i></button>
+            </div>
+            <div class="form-group">
+                <label>ALAMAT EMAIL</label>
+                <div class="input-wrapper"><input type="email" id="edit-email" placeholder="email@anda.com"></div>
+            </div>
+            <div class="form-group">
+                <label>PASSWORD BARU (KOSONGKAN JIKA TIDAK DIGANTI)</label>
+                <div class="input-wrapper"><input type="password" placeholder="••••••••"></div>
+            </div>
+            <div class="form-group">
+                <label>API KEY KREDENSIAL</label>
+                <div style="display: flex; gap: 10px;">
+                    <div class="input-wrapper" style="flex: 1;"><input type="text" value="riiwwxz_8a2b1c..." readonly></div>
+                    <button style="background: var(--primary-blue); color: white; padding: 0 15px; border-radius: 8px;" onclick="copyToClipboard('riiwwxz_8a2b1c')"><i class="fa-regular fa-copy"></i></button>
+                </div>
+            </div>
+            <button class="btn-primary" style="margin-top: 10px;" onclick="simpanProfil()">SIMPAN PERUBAHAN PROFIL</button>
+        </div>
+    </div>
+
+    <!-- Modal Edit Rekening -->
+    <div class="custom-modal" id="editRekeningModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-wallet"></i> EDIT REKENING PENCAIRAN</h3>
+                <button class="modal-close" onclick="closeModal('editRekeningModal')"><i class="fa-solid fa-circle-xmark"></i></button>
+            </div>
+            <div class="form-group">
+                <label>PILIH METODE PENCAIRAN</label>
+                <select id="edit-metode" style="width: 100%; padding: 15px; border-radius: 8px; background: var(--bg-input); border: 1px solid var(--border-color); color: white; outline: none;">
+                    <option value="">-- Pilih Metode Pencairan --</option>
+                    <option value="DANA">DANA</option>
+                    <option value="GoPay">GoPay</option>
+                    <option value="OVO">OVO</option>
+                    <option value="Bank BCA">Bank BCA</option>
+                    <option value="Bank Mandiri">Bank Mandiri</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>NOMOR REKENING / HP E-WALLET</label>
+                <div class="input-wrapper"><input type="text" id="edit-rekening" placeholder="Contoh: 081234567890"></div>
+            </div>
+            <div class="form-group">
+                <label>NAMA PEMILIK REKENING</label>
+                <div class="input-wrapper"><input type="text" id="edit-nama" placeholder="Sesuai nama terdaftar"></div>
+            </div>
+            <button class="btn-primary" style="margin-top: 10px;" onclick="simpanRekening()">SIMPAN DATA REKENING</button>
+        </div>
+    </div>
+
+    <!-- Modal Info Saldo -->
+    <div class="custom-modal" id="infoSaldoModal">
+        <div class="modal-content" style="text-align: center;">
+            <i class="fa-solid fa-eye" style="font-size: 40px; color: var(--primary-blue); margin-bottom: 15px;"></i>
+            <h3 style="margin-bottom: 10px;">Privasi Saldo</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Saldo Anda saat ini disembunyikan. Klik tombol di bawah untuk melihat.</p>
+            <button class="btn-primary" onclick="closeModal('infoSaldoModal')">Mengerti</button>
+        </div>
+    </div>
+
+    <!-- Modal Fitur Umum -->
+    <div class="custom-modal" id="fiturModal">
+        <div class="modal-content" style="text-align: center;">
+            <i class="fa-solid fa-circle-info" style="font-size: 40px; color: var(--accent-orange); margin-bottom: 15px;"></i>
+            <h3 style="margin-bottom: 10px;" id="fitur-title">Informasi</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Fitur ini sedang dalam tahap pengembangan atau membutuhkan aksi lanjutan.</p>
+            <button class="btn-primary" onclick="closeModal('fiturModal')">Tutup</button>
+        </div>
+    </div>
+
+
+    <!-- JAVASCRIPT FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, updateEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBLng5522_Oj9YOty2qZPR_tkm5cZWhBHc",
+            authDomain: "riiwwxzlouisepay.firebaseapp.com",
+            projectId: "riiwwxzlouisepay",
+            storageBucket: "riiwwxzlouisepay.firebasestorage.app",
+            messagingSenderId: "319461341388",
+            appId: "1:319461341388:web:1f1c79277119190a416a69",
+            measurementId: "G-X57JGEZVRS"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        let currentUserData = null; // Menyimpan data user yang login
+
+        // --- FUNGSI UI ---
+        function showLoading() { document.getElementById('loading-overlay').style.display = 'flex'; }
+        function hideLoading() { document.getElementById('loading-overlay').style.display = 'none'; }
+        
+        window.switchTab = function(tabId) {
+            document.getElementById(tabId).checked = true;
+            checkActiveTab();
+        }
+
+        window.openModal = function(modalId, title = '') {
+            if(title) document.getElementById('fitur-title').innerText = title;
+            document.getElementById(modalId).classList.add('active');
+        }
+        window.closeModal = function(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        window.copyToClipboard = function(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Berhasil disalin ke clipboard!');
+            });
+        }
+
+        // --- FUNGSI BUAT INVOICE (REST API) ---
+        window.buatInvoice = function() {
+            const durasi = document.getElementById('durasi-langganan').value;
+            const total = durasi == 500 ? 'Rp 15.000' : 'Rp 30.000';
+            
+            document.getElementById('invoice-text').innerText = `Invoice: #GO-${Math.floor(Math.random()*10000)} • ${durasi == 500 ? '30' : '60'} hari • ${total}`;
+            document.getElementById('invoice-section').style.display = 'block';
+            
+            // Scroll ke invoice
+            document.getElementById('invoice-section').scrollIntoView({behavior: 'smooth'});
+        }
+
+        // --- FUNGSI AUTHENTICATION ---
+        window.loginWithEmail = async function() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            if(!email || !password) return alert('Harap isi Email dan Password!');
+
+            showLoading();
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                alert('Login Gagal: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        };
+
+        window.loginWithGoogle = async function() {
+            showLoading();
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                alert('Gagal Login Google: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        };
+
+        window.registerNewAccount = async function() {
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const username = document.getElementById('reg-username').value;
+
+            if(!email || !password || !username) return alert('Harap isi semua data!');
+            if(password.length < 6) return alert('Password minimal 6 karakter!');
+
+            showLoading();
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Simpan ke database Firestore
+                await setDoc(doc(db, "users", user.uid), {
+                    email: user.email,
+                    username: username,
+                    saldo: 0,
+                    metode: "",
+                    rekening: "",
+                    nama_rekening: "",
+                    createdAt: new Date().toISOString()
+                });
+                alert('Pendaftaran Berhasil!');
+            } catch (error) {
+                alert('Gagal Daftar: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        };
+
+        window.logoutUser = async function() {
+            if(confirm("Apakah Anda yakin ingin keluar?")) {
+                await signOut(auth);
+            }
+        };
+
+        // --- FUNGSI EDIT PROFIL & REKENING ---
+        window.simpanProfil = async function() {
+            if(!auth.currentUser) return;
+            showLoading();
+            try {
+                const newEmail = document.getElementById('edit-email').value;
+                if(newEmail && newEmail !== auth.currentUser.email) {
+                    await updateEmail(auth.currentUser, newEmail);
+                    await updateDoc(doc(db, "users", auth.currentUser.uid), { email: newEmail });
+                }
+                alert('Profil berhasil diperbarui!');
+                closeModal('editProfileModal');
+                // Refresh halaman agar data terbaru tampil
+                setTimeout(() => window.location.reload(), 1000);
+            } catch (error) {
+                alert('Gagal update profil: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        window.simpanRekening = async function() {
+            if(!auth.currentUser) return;
+            const metode = document.getElementById('edit-metode').value;
+            const rekening = document.getElementById('edit-rekening').value;
+            const nama = document.getElementById('edit-nama').value;
+
+            if(!metode || !rekening || !nama) return alert('Lengkapi semua data rekening!');
+
+            showLoading();
+            try {
+                await updateDoc(doc(db, "users", auth.currentUser.uid), {
+                    metode: metode,
+                    rekening: rekening,
+                    nama_rekening: nama
+                });
+                alert('Data rekening berhasil disimpan!');
+                closeModal('editRekeningModal');
+                setTimeout(() => window.location.reload(), 1000);
+            } catch (error) {
+                alert('Gagal simpan rekening: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // --- LOGIKA PEMANTAU STATUS LOGIN ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const email = user.email;
+                let username = email.split('@')[0]; 
+                
+                try {
+                    const docRef = doc(db, "users", user.uid);
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        currentUserData = docSnap.data();
+                        if (currentUserData.username) username = currentUserData.username;
+                    } else {
+                        // Jika login pakai Google dan belum ada di database, buatkan
+                        await setDoc(doc(db, "users", user.uid), {
+                            email: user.email,
+                            username: username,
+                            saldo: 0,
+                            metode: "",
+                            rekening: "",
+                            nama_rekening: "",
+                            createdAt: new Date().toISOString()
+                        });
+                        currentUserData = { metode: "", rekening: "", nama_rekening: "" };
+                    }
+                } catch (e) { console.log("Error fetch data", e); }
+
+                const initial = username.charAt(0).toUpperCase();
+
+                // Update UI Header & Data User
+                document.getElementById('header-login-btn').style.display = 'none';
+                document.getElementById('header-user').style.display = 'flex';
+                document.getElementById('header-logout-btn').style.display = 'block';
+                document.getElementById('header-username').innerText = username;
+                document.getElementById('header-initial').innerText = initial;
+
+                document.getElementById('profile-initial').innerHTML = `${initial} <div class="icon-cam"><i class="fa-solid fa-camera"></i></div>`;
+                document.getElementById('profile-name-display').innerText = username;
+                document.getElementById('profile-email-display').innerText = email;
+                document.getElementById('profile-username').innerText = username;
+                document.getElementById('profile-email').innerText = email;
+                document.getElementById('dash-username').innerText = username;
+
+                // Isi Form Edit Profil
+                document.getElementById('edit-email').value = email;
+
+                // Isi Data Rekening di halaman Profil
+                if(currentUserData && currentUserData.metode) {
+                    document.getElementById('profile-metode').innerText = currentUserData.metode;
+                    document.getElementById('profile-rekening').innerText = currentUserData.rekening;
+                    document.getElementById('profile-nama').innerText = currentUserData.nama_rekening;
+                    
+                    // Isi Form Edit Rekening
+                    document.getElementById('edit-metode').value = currentUserData.metode;
+                    document.getElementById('edit-rekening').value = currentUserData.rekening;
+                    document.getElementById('edit-nama').value = currentUserData.nama_rekening;
+                }
+
+                switchTab('tab-dashboard');
+
+            } else {
+                // JIKA LOGOUT
+                document.getElementById('header-login-btn').style.display = 'block';
+                document.getElementById('header-user').style.display = 'none';
+                document.getElementById('header-logout-btn').style.display = 'none';
+                switchTab('tab-login');
+            }
+        });
+
+        // --- LOGIKA UI UMUM ---
+        function checkActiveTab() {
+            const isAuthPage = document.getElementById('tab-login').checked || document.getElementById('tab-register').checked;
+            document.getElementById('subbar').style.display = isAuthPage ? 'none' : 'flex';
+        }
+        document.querySelectorAll('input[name="app-tabs"]').forEach(radio => {
+            radio.addEventListener('change', checkActiveTab);
+        });
+        checkActiveTab();
+
+    </script>
+</body>
+</html>
